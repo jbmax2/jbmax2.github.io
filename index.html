@@ -1,1 +1,195 @@
-Hello World
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fertilizer Mixing Calculator</title>
+    <style>
+        body {
+            font-family: 'Frutiger', 'Aero', sans-serif;
+            background-color: #e6f7ff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .calculator-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px; /* Adjust the width as needed */
+            text-align: center;
+        }
+
+        h1 {
+            color: #333; /* Black color */
+            font-weight: bold; /* Use a softer font weight */
+            margin-bottom: 20px; /* Adjust spacing */
+        }
+
+        fieldset {
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input, select {
+            width: 100%; /* Adjusted width */
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #b3b3b3;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #0073e6; /* Blue color */
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #005bb5; /* Darker blue color on hover */
+        }
+
+        .chemical {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: baseline;
+        }
+
+        .chemical-name {
+            flex: 100%;
+        }
+
+        .result-container {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+    <script>
+
+        // Adjust various chemicals here by ounce
+        var chemicalData = {
+            "Nterceptor 10 Ounce": 10,
+            "Nterceptor 5 Ounce": 5,
+            "Mic Drop": 3,
+            "Phite": 3,
+            "The Works": .73,
+            "Specticle FLO": .07,
+            "Avenue South": 1,
+            "Acelepryn": 0.12,
+            "Princep": 0.73,
+            "Bifen XTS": .5,
+            "Dimension": 0.55,
+            "Barricor": .25,
+            "Turf Fuel Aquanox": .73,
+            "T Storm Fungicide": 3.5,
+            "Armada": 1.5,
+
+        };
+
+        function calculate() {
+            var chemicals = document.querySelectorAll('.chemical');
+            var squareFeet = parseFloat(document.getElementById("squareFeet").value);
+
+            var result = "For " + squareFeet + " square feet:\n";
+
+            chemicals.forEach(function (chemical) {
+                var chemicalName = chemical.querySelector('.chemical-name').value;
+                var chemicalAmount = calculateChemicalAmount(chemicalName, squareFeet);
+                result += "Use " + chemicalAmount + " ounces of " + chemicalName + "\n";
+            });
+
+            // Calculate the gallons of water based on the tank size (150 gallons treating 50,000 sq ft)
+            var tankSize = 150;
+            var maxSquareFeet = 50000;
+            var waterAmount = (tankSize * squareFeet) / maxSquareFeet;
+
+            result += "Use " + waterAmount.toFixed(2) + " gallons of water.";
+
+            displayResult(result);
+        }
+
+        function calculateChemicalAmount(chemical, squareFeet) {
+            // Retrieve the value for the selected chemical from the data
+            var chemicalValue = chemicalData[chemical] || 0;
+
+            // Perform the calculation (replace this with your specific formula)
+            return (chemicalValue * squareFeet) / 1000; // Adjust the formula as needed
+        }
+
+        function addChemical() {
+            var chemicalsContainer = document.getElementById("chemicals-container");
+
+            var newChemicalDiv = document.createElement('div');
+            newChemicalDiv.className = 'chemical';
+
+            var chemicalNameSelect = document.createElement('select');
+            chemicalNameSelect.className = 'chemical-name';
+
+            // Populate the select options from the chemicalData object
+            for (var chemical in chemicalData) {
+                var option = document.createElement('option');
+                option.value = chemical;
+                option.text = chemical;
+                chemicalNameSelect.add(option);
+            }
+
+            newChemicalDiv.appendChild(chemicalNameSelect);
+            chemicalsContainer.appendChild(newChemicalDiv);
+        }
+
+        function displayResult(result) {
+            var resultContainer = document.getElementById("result-container");
+            resultContainer.innerText = result;
+        }
+
+        // Ensure the first chemical is added on load
+        window.onload = function() {
+            addChemical();
+        };
+    </script>
+</head>
+<body>
+    <div class="calculator-container">
+        <h1>Fertilizer Mixing Calculator</h1>
+        <form>
+            <fieldset>
+                <legend>Mixing Instructions</legend>
+
+                <div>
+                    <label for="squareFeet">Square Feet</label>
+                    <input type="number" id="squareFeet" name="squareFeet" min="0">
+                </div>
+
+                <div id="chemicals-container">
+                    <!-- Initial chemical input field added dynamically -->
+                </div>
+
+                <div>
+                    <button type="button" onclick="addChemical()">Add Chemical</button>
+                    <button type="button" onclick="calculate()">Calculate</button>
+                </div>
+            </fieldset>
+        </form>
+
+        <div id="result-container" class="result-container"></div>
+    </div>
+</body>
+</html>
